@@ -1,0 +1,6 @@
+Python is a great language for beginners.
+Python is easy to learn and easy to use.
+Many students learn Python every day.
+Learning Python can help you write programs.
+Programs help people solve problems.
+This article is a short English text for word counting.
