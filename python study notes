@@ -106,11 +106,90 @@ some3(1,2,3,4,5)
 some3(1,2,3,4,5,6)
 Some3()
 
+(5)可变关键字参数 **kwargs:我也不知道要传入多少个键值对，以k-v的形式传入参数
+将传入的内容，封装成一个dict格式
+def some4(**kwargs):
+print(kwargs)
+print(type(kwargs))
+return ""
+# 封装一个学生信息
+some4(stu_name="jom"，stu_age="19"，stu_details="暂无详细信息")
+some4(teacher_name="kom",stu_age="32")
 
-3.函数返回值
+3.函数返回值:return 后面的内容就是函数的返回值
+
+(1)单返回值
+def add_2(a, b):
+return a + b
+
+(2)多返回值:多返回值的类型是元组，会将多个返回值封装到一个元组之中
+def some5(child1, child2, child3):
+return child1, child2
+print(some5(1,2,3)
+
 4.函数的自定义文档帮助
+def some6(a,b,c):
+"""函数自定义文档需要指明函数名:some6需要指明传入参数:a:int，b:int，c:int需要指明函数的大致功能:返回大于5的参数"""
+        res =[]
+        ifa>5:
+        res.append(a)
+        ifb>5:
+        res.append(b)
+        ifc>5:
+        res.append(c)
+        return res
+some6(3, 6, 10)
+help(some6)
+                
+            
+            
+
+
+
+
 5.函数的作用域
-6.匿名函数(1ambda表达式)
+(1)全局变量(不可以写:不可以修改全局变量)
+###
+- 可以读:可以在函数内部调到(read)全局变量
+a=1
+def some7():
+    print(a)
+
+return ""
+some7()
+
+
+
+(2)局部变量
+在函数内部定义的变量，就是当前函数的，不可以在全局之中，访问局部变量
+局部变脸具有不可互通性质
+def main():
+a=1
+b=2
+    print(a + b)
+    return “”
+main()
+
+
+
+(3)转换:在函数内容，修改全局变量（在函数内容，修改全局变量，使用global参数修饰全局变量）
+b=1
+def some8():
+    global b
+    b=2
+    print(b)
+    return
+some（8)
+print(b)
+
+6.匿名函数Lambda
+
+c=lambda a,b:a+b
+X=2
+y=5
+number = Lambda X, y: X**y
+print(number)
+print(number(x, y))
 
 
 
