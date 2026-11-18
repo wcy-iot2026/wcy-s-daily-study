@@ -8,14 +8,81 @@
     None
 
 2.容器类型
-(1)列表List（有序，可变，可重复）：[1,"hello".Ture]
+(1)列表List（有序，可变，可重复）：[1,"hello".Ture] 
+
+  
+  在末尾添加元素使用append
+  再任意位置添加元素使用insert：list.insert(下标，元素)
+
+  按索引删除：del list[下标]
+  按对象值删除：list.remove[删除的对象]
+  删除末尾最后的一个元素：list.pop(),可用变量接受最后一个元素：m=list.pop()
+
+  常用方法：切片，统计个数，排序，反转
+   统计个数：list=[1,2,1,3,1,5,6,1]
+            list.count(1):统计1的个数
+   #reverse 反转函数glist = [3,2,1]
+                    glist = glist.reverse()
+                    print(glist)
+    list=[5,6,8,4,99,41,1]
+    list.sort(key=;lambda x:x,reverse=Ture)
+ 
+
+
 (2)元组tuple（有序，不可变，可重复）:(1,2,3)
    有序体现在可过下标提取变量
+
+    tuple=（1，2，3）
+    m=tuple（0）    
+    so m=1
+
+    切片tuple[x:y]
+    统计元素：tuple.count()
+
+
+
 (3)字典dict:{"name":"ken","age":18}:
 #通过key访问字典中的某个元素
   print(some2["age"])
+
+
+ 增加：dict（“key”）=”增加的对象“
+ 更改：dict（“key”）=”修改的对象“
+
+  常用方法:获取所有键、获取所有值，获取所有键值对
+  获取所有的键
+    keys = bdict.keys()
+    print(f"bdict字典的所有key:{keys}")
+    #获取所有的值 
+    values = bdict.values()
+    print(f"bdict}字典的所有value:{values}")
+    #获取所有的键值对 items()
+    items = bdict.items()
+    print(f"{bdict}字典的所有键值对:{items}")
+    forkey,value in bdict.items
+    print(key,value)
+
+
 (4)集合set(无序，可变，无重复)：{1，2，3}
 
+    添加：set.add(添加的元素)
+    #删除:针对集合删除，使用数值对应删除remove
+        cset.remove(1)
+        print(cset) 
+
+     #常用方法:常见的集合运算:交集 并集 差集 对称差集
+        dset={1,2,3,4,5,6}
+        eset={4,5,6,7,8,9}
+        print(f"交集运算(&):{dset & eset}")
+        #哪些元素同时在d之中，也在e之中
+        print(f"并集运算(|):{dset|eset}")     
+        #d和e的所有元素
+     print(f"差集运算(-):{dset-eset}")  or  print(f"差集运算(-):{eset-dset}")
+     dset中去除d和e的共同值之后，还剩下哪些元素
+            #对称差集运算 
+         print(f"对称差集运算(^):{dset^eset}")   【两个集合去掉相同的把剩下的相加】
+   
+        
 
 
 #运算符和表达式
@@ -193,6 +260,31 @@ print(number(x, y))
 
 
 
+【第6节】Python之中的文件操作
+模块1:文件操作基础核心
+(1)文件的打开
+(2)文件的关闭
+(3)上下文管理器的使用
+(4)文件打开模式的了解
+模块2:文本文件的读取操作
+(1) 文本文件的读取 read(number) readline() readlines()
+enumerate(f)
+(2)文本文件的写入 write(str)writelines(list)
+模块3:文件指针操作
+(1)文件指针的位置返回 f.tell()
+(2)文件指针的移动f.seek(参考位置，偏移量)
+模块4:高级操作--文件/目录管理
+(1)创建目录 os.mkdir()
+(2)查看目录内容 os.listdir()os.walk()
+(3)
+(4)
+5)
+0
+删除目录 os.rmdir(NULL)
+文件操作 os.rename(old,new) os.remove)
+常用方法
+os.path.exists() os.path.isfile() os.path.isdir()
+路径拼接 os.path.join()
 
 
 
