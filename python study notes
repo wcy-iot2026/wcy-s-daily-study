@@ -269,22 +269,51 @@ print(number(x, y))
 模块2:文本文件的读取操作
 (1) 文本文件的读取 read(number) readline() readlines()
 enumerate(f)
+
+  read（读取几个字符）
+  readlined读行
+  以列表形式读取。readlines#['这是text第一行\n'，'这是text第二行\n'，'这是text第三行\n']
+
+  with open("./test.txt",as f:encoding="utf-8")
+  some = enumerate(f)
+  print(name)
+  等于for index, context in enumerate(f):
+      print(index,“：”，context)
+
+
 (2)文本文件的写入 write(str)writelines(list)
+
+# writelines
+w_obj=["今天是星期四\n"，"今天是2026年1月29日\n"，"今天外面下雪了\n"]
+with open("./test_2.txt", "w", encoding="utf-8") as f:
+f.writelines(w_obj)context = f.readlines()
+with open("./test_2.txt","n",encoding="utf-8") as f:
+print(context)、、、
 模块3:文件指针操作
 (1)文件指针的位置返回 f.tell()
 (2)文件指针的移动f.seek(参考位置，偏移量)
 模块4:高级操作--文件/目录管理
 (1)创建目录 os.mkdir()
 (2)查看目录内容 os.listdir()os.walk()
-(3)
-(4)
-5)
-0
-删除目录 os.rmdir(NULL)
-文件操作 os.rename(old,new) os.remove)
-常用方法
-os.path.exists() os.path.isfile() os.path.isdir()
-路径拼接 os.path.join()
+(3)删除目录 os.rmdir(NULL)
+(4)文件操作 os.rename(old,new) os.remove)
+（5)常用方法
+os.path.exists() ：判断路径是否存在
+os.path.isfile()：判断传入的是否文件
+os.path.isdir()：判断传入是否路径
+os.getcwd(得到当前路径)
+（6）路径拼接 os.path.join()
+
+
+)now_path = os.getcwd()
+print(now_path)
+#给当前路径拼接一个new
+new_path = os.path.join(now_path,"new"）
+print(now_path)
+#
+
+
+
 
 
 
