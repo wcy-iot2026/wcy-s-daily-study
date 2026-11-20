@@ -314,6 +314,70 @@ print(now_path)
 
 
 
+""try-except 异常捕捉模式
+#1.基础概念和异常结构
+
+
+except:捕获一切，连中断和退出都不放过
+except Exception:最常用(推捕获所有程序错误荐)
+except ValueError:只捕获指定类型，其他照常抛出
+except (ValueError, TypeError):一次捕获多个类型，写成元组
+except ValueError as e:捕获并把异常对象存进e，可看信息
+多个except时:子类写前面，父类写后面匹配自上而下，Exception放前面会把后面的具体类型全挡住
+
+#2.指定异常捕捉
+
+(单/双)：except ValueError:只捕获指定类型，其他照常抛出
+except (ValueError, TypeError):一次捕获多个类型，写成元组
+
+
+
+#3.捕捉异常详情
+#4.else 无异常时执行、
+else：
+#5.finally 有无异常都执
+finally：
+#6.主动抛出异常 raise
+
+name:str=input("请输入一个name，其中1<name.size<9:")
+try：
+    if len(name) ≤ 1 or Len(name) > 9:
+        raise ValueError("在设置name时，name的长度应该在合法范围之内")
+else:
+    print("设置成功")
+except ValueError as e:
+    print(f"[ValueError]:fe}")
+
+#7.自定义异常 Exception
+
+
+
+
+
+
+
+1.module的使用
+(1)导入方式和重命名
+
+from 包名 import 类/方法/函数/变量/类对象
+
+(2)module的分类
+
+标准车 (math datetime time,）
+第三方库(numpy pandas keras sklearn matplotlib)
+自定义库
+
+#as：将包命名（import numpy as np）（将 numpy 命名为 np）
+
+2.自定义模块
+(1)创建和导入自定义模块
+(2)_name
+(3)模块的私有变量
+3.自定义包
+(1)自定义包的使用
+(2)
+init
+(3)第三方包的使用
 
 
 
