@@ -1,0 +1,81 @@
+# Python 学习日志 · 2026-11-23
+
+**主题：面向对象 —— 封装**
+
+今天的主线是封装。从"用方法访问私有属性"出发，搞清楚了 `@property` 和 setter 的格式与原理、单双下划线的区别，用三个类做了实践，中间踩了三个典型的坑。
+
+## 一、今天学了什么
+
+**1. 封装的概念**
+两层含义：把数据（属性）和操作数据的方法打包进一个类；把内部细节藏起来，只留公开接口给外部用。三个好处：保护数据、隐藏实现细节、内部修改不影响外部调用。
+
+**2. 访问器与修改器**
+最初用普通方法 `get_student()` 访问私有属性，调用时必须加括号。这是 property 出现之前的写法。
+
+**3. @property 与 setter（重点）**&#8203;
+`@property` 让方法像属性一样访问（不加括号），`@属性名.setter` 接管赋值、可加检查。两个方法必须同名；setter 可省略，省略后属性只读。setter 常见用途：校验、加工、转换、联动。
+
+**4. property 背后的原理（进阶）**&#8203;
+`property` 是一个描述符类，`@property` 是 `name = property(name)` 的语法糖；`@x.setter` 会返回一个新对象覆盖旧对象，所以名字必须相同。读写时由描述符拦截并转发到 fget / fset。
+
+**5. 单下划线与双下划线**
+`_x` 只是约定私有，外部照样能访问；`__x` 触发名称改写，实际存成 `_类名__x`，避免被子类覆盖；`__x__` 是魔术方法（如 `__init__`），不改名。另外，点号 `.` 是成员访问运算符，读作"的"。
+
+**6. 表层与里层**
+双下划线的 `__people_intermation`、`__people_add` 是里层方法（内部实现，不应被外部访问）；公开的 `total_people` 是表层方法，作为对外窗口。
+
+## 二、今天做了什么
+
+**实践 1 · Stu 与 Newstudent**
+先写普通方法版 `get_student()`（调用加括号），再改成 property 版（调用不加括号），对比两种写法。property 版里 getter 和 setter 同名，赋值 `new.get_student = "王五"` 自动走 setter。
+
+**实践 2 · people 类的表层与里层**
+`__init__` 里 `self.name`、`self.age` 是公开的；`__people_intermation`、`__people_add` 是双下划线私有方法；`total_people` 作为表层窗口，内部调用两个私有方法拼接字符串。
+
+**实践 3 · Student 带检查的 setter**
+`__name`、`__age` 私有；`@property` 读 age，`@age.setter` 写 age 并检查 `if value < 0`。测试：`stu.age = -5` 被拦住，`stu.age = 20` 改成功。
+
+## 三、踩过的坑与修复
+
+**坑 1 · getter 和 setter 用了不同名字**
+写成 `get_stu_name` 和 `set_stu_name`，生成两个独立的 property 对象：一个没 setter 不能赋值，另一个不是方法不能调用。
+→ 修复：两个方法必须完全同名。
+
+**坑 2 · 私有字段名拼错**
+setter 里写成 `self.__studentr_name`（多了个 r），和 getter 的 `__student_name` 对不上。程序不报错，但赋值存进新属性，打印还是旧值"李四"。
+→ 修复：两处私有字段名必须一模一样。这类 bug 不报错，最隐蔽。
+
+**坑 3 · 调用普通方法忘了加括号**
+`res1 = self.__people_intermation` 拿到的是方法对象而非返回值，拼接时报 `TypeError: unsupported operand type(s) for +: 'method' and 'str'`。
+→ 修复：普通方法要写 `self.__people_intermation()`；只有加了 `@property` 的属性才不加括号。
+
+## 四、速查表
+
+| 写法 | 叫什么 | 外部访问 | 说明 |
+|------|--------|---------|------|
+| `stu.name` | @property 属性 | 不加括号 | 自动调用 getter |
+| `stu.name = v` | setter | 直接赋值 | 自动调用 setter |
+| `stu.method()` | 普通方法 | 必须加括号 | 加括号才执行 |
+| `_x` | 单下划线 | 能访问 | 约定私有，靠自觉 |
+| `__x` | 双下划线 | 改名后可达 | 存成 `_类名__x` |
+| `__x__` | 魔术方法 | — | 如 `__init__`，不改名 |
+
+**property 固定模板**（属性名三处同名、私有名两处同名）：
+
+```python
+class 类名:
+    def __init__(self, 初始值):
+        self.__私有名 = 初始值
+
+    @property
+    def 属性名(self):
+        return self.__私有名
+
+    @属性名.setter
+    def 属性名(self, value):
+        self.__私有名 = value
+```
+
+## 五、下一步
+
+封装已经入门，面向对象还剩两个特性：**继承**（子类复用父类代码）和**多态**（同一接口不同实现）。建议先把今天的三个类自己敲一遍跑通，再进入继承。
