@@ -419,6 +419,93 @@ OPP面向对象编程，将现实世界中某些事物所具有的属性和动�
 
 
 
+
+
+  封装：
+
+  访问器和修改器
+
+"""class Stu():
+    def __init__(self,student_name):
+     self.__student_name=student_name
+
+    def get_student(self):
+        return self.__student_name
+
+stu=Stu("张三")
+print(stu.get_student())
+
+#优雅点
+#访问器@property
+#修改器@函数名.setter
+class Newstudent():
+    def __init__(self,student_name):
+        self.__student_name=student_name
+
+    @property
+    def get_student(self):
+        return self.__student_name
+    
+    @get_student.setter
+    def get_student(self,newname):
+        self.__student_name=newname
+new=Newstudent("李四")
+print(new.get_student)
+new.get_student="王五"
+print(new.get_student)
+
+
+表层和里层
+
+class people():
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    
+    #内层方法理论上来说是不允许访问的
+    def __people_intermation(self):
+        return f'{self.name}的年龄是{self.age}'
+
+    def __people_add(self):
+        return "此外"
+
+    #表层的方法可以被访问
+    def total_people(self):
+        #先得到起始信息
+        res1=self.__people_intermation()
+        res2=self.__people_add()
+        return res2 + "\n" + res1
+result=people('张三',18)
+print(result.total_people())"""
+
+
+
+例子
+class Student:
+    def __init__(self, name, age):
+        self.__name = name          # 私有属性，藏起来
+        self.__age = age
+
+    @property                       # 读接口
+    def age(self):
+        return self.__age
+
+    @age.setter                     # 写接口，带检查
+    def age(self, value):
+        if value < 0:
+            print("年龄不能为负数")
+            return
+        self.__age = value
+
+stu = Student("张三", 18)
+print(stu.age)       # 18，读走 property
+stu.age = -5         # 被拦住，age 还是 18
+print(stu.age)       
+stu.age = 20    # 合格，改成功
+print(stu.age)   
+
+
+
  
 
 
