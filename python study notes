@@ -506,7 +506,185 @@ print(stu.age)
 
 
 
+ """class Stu():
+    def __init__(self,student_name):
+     self.__student_name=student_name
+
+    def get_student(self):
+        return self.__student_name
+
+stu=Stu("张三")
+print(stu.get_student())
  
+#优雅点
+#访问器@property
+#修改器@函数名.setter
+class Newstudent():
+    def __init__(self,student_name):
+        self.__student_name=student_name
+
+    @property
+    def get_student(self):
+        return self.__student_name
+    
+    @get_student.setter
+    def get_student(self,newname):
+        self.__student_name=newname
+new=Newstudent("李四")
+print(new.get_student)
+new.get_student="王五"
+print(new.get_student)
+
+
+
+class people():
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    
+    #内层方法理论上来说是不允许访问的
+    def __people_intermation(self):
+        return f'{self.name}的年龄是{self.age}'
+
+    def __people_add(self):
+        return "此外"
+
+    #表层的方法可以被访问
+    def total_people(self):
+        #先得到起始信息
+        res1=self.__people_intermation()
+        res2=self.__people_add()
+        return res2 + "\n" + res1
+result=people('张三',18)
+print(result.total_people())"""
+
+"""
+
+from argparse import Namespace
+
+
+class Student:
+    def __init__(self, name, age):
+        self.__name = name          # 私有属性，藏起来
+        self.__age = age
+
+    @property                       # 读接口
+    def age(self):
+        return self.__age
+
+    @age.setter                     # 写接口，带检查
+    def age(self, value):
+        if value < 0:
+            print("年龄不能为负数")
+            return
+        self.__age = value
+
+stu = Student("张三", 18)
+print(stu.age)       # 18，读走 property
+stu.age = -5         # 被拦住，age 还是 18
+print(stu.age)       
+stu.age = 20    # 合格，改成功
+print(stu.age)   """
+
+
+"""
+
+class student():
+    def __init__(self,name,age):
+        self.__name=name
+        self.__age=age
+    @property
+    def get_age(self):
+        return self.__age
+
+    @get_age.setter
+    def get_age(self,newage):
+        if newage <0 or newage>120:
+            print("年龄不合法")
+            return
+        self.__age=newage
+
+
+    def introduce(self):
+        return f"我叫{self.name}，今年{self.age}岁"
+        stu = student("张三", 18)
+stu=student("李四",20)
+print(stu.get_age)
+stu.get_age=200
+print(stu.get_age)
+print(stu.introduce)
+
+
+
+
+#继承如何实现
+class 子类（父类）："""
+"""
+
+
+class people():
+    def __init__(self,people_name,people_age):
+        #公有属性
+        self.people_name=people_name
+        #私有属性(子类无法继承此属性)
+        self.__people_age=people_age
+
+    def hi(self):
+        pass
+    #私有方法(子类无法继承此方法)
+    def __get_age(self):
+        return f"我的年龄是{self.__people_age}"
+
+class worker(people):
+    #复写People父类的init初始化函数
+    def __init__(self,worker_name,people_address):
+        people.__init__(self,people_name=worker_name)
+        self.people_address=people_address
+    #复写People父类的打招呼函数
+    def hi(self):
+        return f"我是{self.people_name}，我是一个工人"
+    #在父类的基础上扩展函数
+    def get_address(self):
+        return self.people_address
+
+worker=worker("张三","北京")
+print(worker.hi())
+print(worker.get_address())
+print(worker.people_name)"""
+"""
+多继承
+python支持多继承引入两个知识点:
+多继承的继承顺序：菱形继承
+多继承的MR0机制""""""(print(子类.__mro__))#查看所属的父类，默认最顶层的类为object"""
+"""
+在下面的例子中，第0梯队为object，是所有类的根，第一梯队为Goods，第二梯队为Thinks和Shape，第三梯队为Pen
+因此MRO顺序为Pen到Goods到Thinks到Shape到object
+
+多继承的继承顺序：
+① 子类优先于父类 → Goods 是共同父类，被往后挪
+② 先继承的优先 → 括号里 Things 在前，压过 Shape
+③ 广度优先于深度 → 同层的 Shape 抢在父类 Goods 前
+最终 say() 命中 Things 就停 —— 这是"命中即停"，不在这三条里
+三条只负责排队；谁被调用，还要看查找从左往右第一个撞到谁，谁就先执行"""
+"""
+class Goods():
+    pass
+
+class Thinks(Goods):
+    def say(self):
+        print("我是Thinks")
+
+class Shape(Goods):
+    def say(self):
+        print("我是Shape")
+
+class Pen(Thinks,Shape):
+   #  普通调用父类方法，点名调某个父类的方法
+  # def say(self):
+      #  Thinks.say(self)
+    #super()调用父类方法，自动调用第一个父类的方法
+   def say(self):
+        super().say()
 
 
 
