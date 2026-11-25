@@ -1,0 +1,244 @@
+# 第20节 模块化和包管理
+
+> 做竞赛项目、多文件工程是硬性基础。本文把模块、包、`__init__.py`、导入方式和工程结构整理在一起，代码均在本机实测。
+
+---
+
+## 一、模块与包
+
+### 1.1 模块（module）
+
+- 一个 `.py` 文件就是一个模块。
+- 模块名就是文件名（不含 `.py`）。
+- 用 `import 模块名` 导入。
+
+```python
+import math
+print(math.sqrt(9))   # 3.0
+```
+
+### 1.2 包（package）
+
+- 包是**包含 `__init__.py` 的文件夹**（Python 3.3+ 也支持无 `__init__.py` 的「命名空间包」）。
+- 包里可以有子模块、子包。
+- 用 `import 包名.模块名` 导入。
+
+目录结构：
+
+```
+iotpkg/                 ← 包
+├── __init__.py         ← 包的标识，导入包时自动执行
+├── device.py           ← 子模块
+└── comm.py             ← 子模块
+```
+
+---
+
+## 二、__init__.py 的作用
+
+`__init__.py` 有三个核心作用：
+
+### 2.1 标识这是一个包
+
+有它，Python 才把文件夹当正规包处理（没有也能导入，但行为不同，见第五节）。
+
+### 2.2 导入包时自动执行
+
+```python
+# iotpkg/__init__.py
+print('iotpkg/__init__.py 被执行了')
+```
+
+```python
+import iotpkg
+```
+
+实测输出：
+```
+iotpkg/__init__.py 被执行了
+```
+
+只要 `import iotpkg` 或 `from iotpkg import ...`，这段代码就会跑。适合做初始化、注册等。
+
+### 2.3 控制对外暴露什么
+
+在 `__init__.py` 里重新导出，外部就能直接 `from 包名 import 名字`：
+
+```python
+# iotpkg/__init__.py
+from .device import Device
+__all__ = ['Device']      # 声明对外公开的名字
+```
+
+```python
+from iotpkg import Device          # 可以直接导入
+from iotpkg.comm import Communication
+```
+
+实测输出：
+```
+iotpkg/__init__.py 被执行了
+传感器A 已连接
+online = True
+[MQTT] -> 传感器A: hello
+包里可用的名字: ['Device']
+```
+
+要点：`__all__` 影响 `from 包 import *` 时导入哪些名字，也起文档作用。
+
+---
+
+## 三、导入的几种写法
+
+```python
+import math                         # 导入整个模块，用 math.sqrt
+import math as m                    # 起别名
+from math import sqrt               # 只导入一个名字，直接用 sqrt
+from math import sqrt, pi           # 导入多个
+from math import *                  # 全部导入（不推荐，污染命名空间）
+```
+
+包内相对导入（在包内部使用）：
+
+```python
+from . import device          # 导入同级模块
+from .device import Device    # 从同级模块导入名字
+from ..utils import helper    # 导入上一级包的模块
+```
+
+- `.` 表示当前目录，`..` 表示上一级。
+- 相对导入只在包内部有效，直接运行脚本时会报错。
+
+---
+
+## 四、sys.path：Python 去哪找模块
+
+`import` 时 Python 按 `sys.path` 里的路径依次查找。
+
+```python
+import sys
+print(sys.path)
+```
+
+常见做法：把自己的项目根目录加进去，就能从任意位置导入。
+
+```python
+import sys
+sys.path.append('/path/to/your/project')
+```
+
+⚠️ 注意：`sys.path` 里第一个条目通常是当前脚本所在目录，**同名文件会覆盖标准库模块**，命名时避开 `math.py`、`json.py` 这类名字。
+
+---
+
+## 五、命名空间包（没有 __init__.py）
+
+Python 3.3+ 允许文件夹没有 `__init__.py`，也能当包导入：
+
+```
+nspkg/            ← 没有 __init__.py
+└── mod.py
+```
+
+实测：
+```python
+import nspkg.mod
+print(nspkg.mod.VALUE)   # 42
+```
+
+输出：
+```
+无 __init__.py 也能导入: 42
+```
+
+区别：
+- 正规包：有 `__init__.py`，导入时执行它，能控制导出。
+- 命名空间包：没有 `__init__.py`，适合把同一个包拆到多个目录，但不做初始化。
+
+工程里想明确控制行为，**建议还是加 `__init__.py`**。
+
+---
+
+## 六、多文件工程的标准结构
+
+一个竞赛 / 项目常用结构：
+
+```
+myproject/
+├── main.py                 ← 程序入口
+├── requirements.txt        ← 依赖清单
+├── device/                 ← 设备相关
+│   ├── __init__.py
+│   ├── base.py
+│   └── sensor.py
+├── communication/          ← 通信相关
+│   ├── __init__.py
+│   └── mqtt.py
+└── utils/                  ← 工具
+    ├── __init__.py
+    └── helper.py
+```
+
+`main.py`：
+
+```python
+from device.sensor import Sensor
+from communication.mqtt import MQTTClient
+
+sensor = Sensor('S1')
+client = MQTTClient('broker.local')
+client.send(sensor.name, 'data')
+```
+
+依赖管理：
+
+```bash
+pip install paho-mqtt
+pip freeze > requirements.txt      # 导出依赖清单
+pip install -r requirements.txt    # 在别处一键安装
+```
+
+---
+
+## 七、和 sys.modules 的关系（承接上一节）
+
+- `import` 一个包时，包本身和它的 `__init__.py`、子模块，都会被登记进 `sys.modules`。
+- 所以 `import iotpkg` 后，`sys.modules` 里会多出 `iotpkg`、`iotpkg.device` 等条目。
+- 重复 `import` 只登记一次，靠的就是这张表。
+
+```python
+import sys
+import iotpkg
+print('iotpkg' in sys.modules)          # True
+print('iotpkg.device' in sys.modules)   # True（如果 __init__ 导入了它）
+```
+
+回顾上一节笔记：`module_dict = sys.modules` 是引用赋值，`len()` 变大就是因为导入把模块和依赖都登记进去了。
+
+---
+
+## 八、常见坑
+
+1. **循环导入**：A 导 B、B 又导 A → `ImportError`。把公共部分抽到第三个模块，改成单向依赖。
+2. **整包导入慢**：包里模块多时，`import 包` 会把 `__init__.py` 里的全部加载。按需 `from 包.模块 import 名字`。
+3. **相对导入在直接运行时失效**：脚本作为 `__main__` 直接跑时没有包上下文，用绝对导入或 `python -m 包.模块`。
+4. **文件名和模块名冲突**：别把文件命名成 `json.py`、`math.py`，会覆盖标准库。
+5. **改了代码没生效**：`sys.modules` 已缓存旧模块，重开 Python 或用 `importlib.reload(模块)`。
+
+---
+
+## 九、总结
+
+| 概念 | 作用 |
+| --- | --- |
+| 模块 | 一个 `.py` 文件 |
+| 包 | 含 `__init__.py` 的文件夹，可含子模块 |
+| `__init__.py` | 标识包、导入时初始化、控制对外导出 |
+| `import` / `from ... import` | 导入模块或名字 |
+| 相对导入 `.` / `..` | 包内部互相引用 |
+| `sys.path` | Python 查找模块的路径列表 |
+| 命名空间包 | 无 `__init__.py` 的包，适合跨目录拆分 |
+| `sys.modules` | 已加载模块登记表，避免重复导入 |
+| `requirements.txt` | 依赖清单，方便复现环境 |
+
+一句话：**模块管单文件，包管多文件，`__init__.py` 管包的门面，`sys.modules` 管导入的缓存。**
